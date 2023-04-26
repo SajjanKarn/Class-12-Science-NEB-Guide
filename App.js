@@ -8,6 +8,7 @@ import AppBar from "./src/components/AppBar";
 import SubjectCard from "./src/components/SubjectCard";
 
 import colors from "./src/config/colors";
+import TopicScreen from "./src/screens/TopicScreen";
 
 export default function App() {
   const [topics, setTopics] = useState([
@@ -41,11 +42,14 @@ export default function App() {
         <AppText variant="Bold" style={styles.contentTitle}>
           Topics
         </AppText>
-        <View style={styles.underline} />
 
         <View style={styles.cardContainer}>
           {topics.map((topic) => (
-            <SubjectCard key={topic.id} title={topic.title} />
+            <SubjectCard
+              key={topic.id}
+              title={topic.title}
+              subHeading={`Chapter ${topic.id}`}
+            />
           ))}
         </View>
       </View>
@@ -68,13 +72,6 @@ const styles = StyleSheet.create({
   contentTitle: {
     fontSize: 20,
     marginBottom: 5,
-  },
-  underline: {
-    width: 80,
-    height: 5,
-    backgroundColor: colors.underLine,
-    marginBottom: 20,
-    borderRadius: 5,
   },
   cardContainer: {
     flex: 1,

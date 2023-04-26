@@ -4,6 +4,7 @@ import AppText from "./AppText";
 
 export default function SubjectCard({
   title = "Subject",
+  subHeading = "Chapter 1",
   imageURL = "https://bs-uploads.toptal.io/blackfish-uploads/components/seo/content/og_image_file/og_image/1272404/0712-Bad_Practices_in_Database_Design_-_Are_You_Making_These_Mistakes_Dan_Social-754bc73011e057dc76e55a44a954e0c3.png",
 }) {
   return (
@@ -16,6 +17,10 @@ export default function SubjectCard({
         <Image source={{ uri: imageURL }} style={styles.image} />
       </View>
       <View style={styles.cardContent}>
+        <AppText variant="Regular" style={styles.cardSubHeading}>
+          {subHeading}
+        </AppText>
+
         <AppText variant="Medium" style={styles.cardTitle}>
           {title}
         </AppText>
@@ -53,6 +58,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     justifyContent: "center",
-    alignItems: "center",
+    // alignItems: "center",
   },
 });
