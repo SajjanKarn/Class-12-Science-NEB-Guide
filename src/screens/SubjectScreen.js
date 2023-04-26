@@ -6,6 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import AppText from "../components/AppText";
 import SubjectCard from "../components/SubjectCard";
 import Underline from "../components/Underline";
+import FadeInView from "../components/FadeInView";
 
 export default function SubjectScreen() {
   const navigation = useNavigation();
@@ -63,13 +64,15 @@ export default function SubjectScreen() {
 
         <View style={styles.cardContainer}>
           {subjects.map((topic) => (
-            <SubjectCard
-              key={topic.id}
-              title={topic.title}
-              imageURL={topic.imageUrl}
-              subHeading={`${topic.totalChapter} Chapters`}
-              onPress={() => navigation.navigate("SubjectTopicsScreen")}
-            />
+            <FadeInView key={topic.id} style={styles.fadeStyle}>
+              <SubjectCard
+                key={topic.id}
+                title={topic.title}
+                imageURL={topic.imageUrl}
+                subHeading={`${topic.totalChapter} Chapters`}
+                onPress={() => navigation.navigate("SubjectTopicsScreen")}
+              />
+            </FadeInView>
           ))}
         </View>
       </View>
@@ -99,5 +102,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
+  },
+  fadeStyle: {
+    width: "100%",
   },
 });
