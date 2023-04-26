@@ -1,14 +1,13 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
-import AppText from "./src/components/AppText";
-import AppBar from "./src/components/AppBar";
-import SubjectCard from "./src/components/SubjectCard";
+import AppText from "../components/AppText";
+import SubjectCard from "../components/SubjectCard";
+import Underline from "../components/Underline";
 
-import colors from "./src/config/colors";
-import TopicScreen from "./src/screens/TopicScreen";
-
-export default function SujectTopicsScreen() {
+export default function SubjectTopicsScreen() {
+  const navigation = useNavigation();
   const [topics, setTopics] = useState([
     { id: 1, title: "Introduction to Database" },
     { id: 2, title: "Database Design" },
@@ -24,6 +23,7 @@ export default function SujectTopicsScreen() {
         <AppText variant="Bold" style={styles.contentTitle}>
           Topics
         </AppText>
+        <Underline />
 
         <View style={styles.cardContainer}>
           {topics.map((topic) => (
@@ -31,6 +31,7 @@ export default function SujectTopicsScreen() {
               key={topic.id}
               title={topic.title}
               subHeading={`Chapter ${topic.id}`}
+              onPress={() => navigation.navigate("TopicScreen")}
             />
           ))}
         </View>
@@ -48,10 +49,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
+    paddingBottom: 30,
   },
   contentTitle: {
-    fontSize: 20,
-    marginBottom: 5,
+    fontSize: 25,
+    marginBottom: 2,
   },
   cardContainer: {
     flex: 1,

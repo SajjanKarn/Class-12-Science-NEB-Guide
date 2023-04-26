@@ -8,7 +8,7 @@ import HeaderNavigation from "../components/HeaderNavigation";
 export default function TopicScreen({ title = "Rotational Dynamics" }) {
   return (
     <View style={styles.container}>
-      <HeaderNavigation />
+      {/* <HeaderNavigation /> */}
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    marginTop: height(10),
+    marginTop: height(2),
   },
   topicTitle: {
     fontSize: totalSize(2.3),
