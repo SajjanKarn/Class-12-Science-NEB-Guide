@@ -6,18 +6,52 @@ import { useFonts } from "expo-font";
 import AppText from "./src/components/AppText";
 import AppBar from "./src/components/AppBar";
 import SubjectCard from "./src/components/SubjectCard";
-
-import colors from "./src/config/colors";
-import TopicScreen from "./src/screens/TopicScreen";
+import Underline from "./src/components/Underline";
 
 export default function App() {
-  const [topics, setTopics] = useState([
-    { id: 1, title: "Introduction to Database" },
-    { id: 2, title: "Database Design" },
-    { id: 3, title: "Database Implementation" },
-    { id: 4, title: "Database Management" },
-    { id: 5, title: "Database Administration" },
-    { id: 6, title: "Database Security" },
+  const [subjects, setSubjects] = useState([
+    {
+      id: 1,
+      title: "Physics",
+      imageUrl:
+        "https://www.vedantu.com/seo/content-images/bc692335-2c03-4559-9cf0-dff766298eef.jpg",
+      totalChapter: 10,
+    },
+    {
+      id: 2,
+      title: "Chemistry",
+      imageUrl:
+        "https://council.science/wp-content/uploads/2017/04/IUPAC-feature-image.jpg",
+      totalChapter: 15,
+    },
+    {
+      id: 3,
+      title: "Mathematics",
+      imageUrl:
+        "https://www.stoodnt.com/blog/wp-content/uploads/2021/10/branches_of_mathematics.jpg",
+      totalChapter: 7,
+    },
+    {
+      id: 4,
+      title: "Biology",
+      imageUrl:
+        "https://images.shiksha.com/mediadata/images/articles/1538985491phpKctLgx.jpeg",
+      totalChapter: 12,
+    },
+    {
+      id: 5,
+      title: "Computer Science",
+      imageUrl:
+        "https://images.pexels.com/photos/276452/pexels-photo-276452.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      totalChapter: 8,
+    },
+    {
+      id: 6,
+      title: "English",
+      imageUrl:
+        "https://images.pexels.com/photos/256417/pexels-photo-256417.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+      totalChapter: 10,
+    },
   ]);
   const [fontsLoaded] = useFonts({
     "Poppins-ExtraLight": require("./assets/fonts/Poppins-ExtraLight.ttf"),
@@ -40,15 +74,17 @@ export default function App() {
 
       <View style={styles.contentContainer}>
         <AppText variant="Bold" style={styles.contentTitle}>
-          Topics
+          Subjects
         </AppText>
+        <Underline />
 
         <View style={styles.cardContainer}>
-          {topics.map((topic) => (
+          {subjects.map((topic) => (
             <SubjectCard
               key={topic.id}
               title={topic.title}
-              subHeading={`Chapter ${topic.id}`}
+              imageURL={topic.imageUrl}
+              subHeading={`${topic.totalChapter} Chapters`}
             />
           ))}
         </View>
@@ -70,8 +106,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   contentTitle: {
-    fontSize: 20,
-    marginBottom: 5,
+    fontSize: 25,
+    marginBottom: 2,
   },
   cardContainer: {
     flex: 1,
