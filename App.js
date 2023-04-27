@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -5,7 +6,25 @@ import { NavigationContainer } from "@react-navigation/native";
 import SubjectScreen from "./src/screens/SubjectScreen";
 import SubjectTopicsScreen from "./src/screens/SubjectTopicsScreen";
 import TopicScreen from "./src/screens/TopicScreen";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import Loader from "./src/components/Loader";
+
+import { API_URL, CDA_ACCESS_TOKEN } from "./src/config/api";
+
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { persistCache } from "apollo3-cache-persist";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({
+  uri: API_URL,
+  cache,
+  credentials: "same-origin",
+  headers: {
+    Authorization: `Bearer ${CDA_ACCESS_TOKEN}`,
+  },
+});
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +64,7 @@ const AppStack = () => (
 );
 
 export default function App() {
+  const [loadingCache, setLoadingCache] = useState(true);
   const [fontsLoaded] = useFonts({
     "Poppins-ExtraLight": require("./assets/fonts/Poppins-ExtraLight.ttf"),
     "Poppins-Light": require("./assets/fonts/Poppins-Light.ttf"),
@@ -56,13 +76,26 @@ export default function App() {
     "Poppins-Black": require("./assets/fonts/Poppins-Black.ttf"),
   });
 
+  useEffect(() => {
+    persistCache({
+      cache,
+      storage: AsyncStorage,
+    }).then(() => setLoadingCache(false));
+  }, []);
+
+  if (loadingCache) {
+    return <Loader />;
+  }
+
   if (!fontsLoaded) {
-    return null;
+    return <Loader />;
   }
 
   return (
-    <NavigationContainer>
-      <AppStack />
-    </NavigationContainer>
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <AppStack />
+      </NavigationContainer>
+    </ApolloProvider>
   );
 }
