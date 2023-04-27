@@ -28,6 +28,7 @@ import AboutUs from "./src/screens/AboutUs";
 import PrivacyPolicy from "./src/screens/PrivacyPolicy";
 
 import { useNavigation } from "@react-navigation/native";
+import TermsCondition from "./src/screens/TermsCondition";
 
 const cache = new InMemoryCache();
 
@@ -81,6 +82,10 @@ const AppStack = () => (
                     onSelect={() => navigation.navigate("PrivacyPolicy")}
                     text="Privacy Policy"
                   />
+                  <MenuOption
+                    onSelect={() => navigation.navigate("TermsCondition")}
+                    text="Terms & Condition"
+                  />
                 </MenuOptions>
               </Menu>
             </TouchableNativeFeedback>
@@ -123,6 +128,16 @@ const AppStack = () => (
       component={PrivacyPolicy}
       options={{
         headerTitle: "Privacy Policy",
+        headerTitleStyle: {
+          fontFamily: "Poppins-Bold",
+        },
+      }}
+    />
+    <Stack.Screen
+      name="TermsCondition"
+      component={TermsCondition}
+      options={{
+        headerTitle: "Terms & Condition",
         headerTitleStyle: {
           fontFamily: "Poppins-Bold",
         },

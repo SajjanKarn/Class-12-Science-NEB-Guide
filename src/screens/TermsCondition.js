@@ -2,15 +2,14 @@ import { StyleSheet } from "react-native";
 
 import { WebView } from "react-native-webview";
 
-export default function PrivacyPolicy() {
+export default function TermsCondition() {
   const links = [
-    "https://doc-hosting.flycricket.io/class-12-science-neb-guide-privacy-policy/f8eaffba-cd93-4b55-815a-71294f7b0c8e/privacy",
-    "https://www.app-privacy-policy.com/live.php?token=OXz5OzxFKyEKhOL7QXDKvctk1EF4oj38",
+    "https://www.app-privacy-policy.com/live.php?token=YtcIsliPSmxqIc630sl5zsQopVA4iG6D",
   ];
   return (
     <WebView
       source={{
-        uri: links[1],
+        uri: links[0],
       }}
       style={styles.container}
     />
