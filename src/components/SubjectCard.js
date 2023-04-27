@@ -6,7 +6,7 @@ export default function SubjectCard({
   title = "Subject",
   subHeading = "",
   onPress = () => {},
-  imageURL = "https://bs-uploads.toptal.io/blackfish-uploads/components/seo/content/og_image_file/og_image/1272404/0712-Bad_Practices_in_Database_Design_-_Are_You_Making_These_Mistakes_Dan_Social-754bc73011e057dc76e55a44a954e0c3.png",
+  imageURL = "https://images.pexels.com/photos/583475/pexels-photo-583475.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 }) {
   return (
     <TouchableOpacity
@@ -14,9 +14,11 @@ export default function SubjectCard({
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <View style={styles.imageContainer}>
-        <Image source={{ uri: imageURL }} style={styles.image} />
-      </View>
+      {imageURL && (
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: imageURL }} style={styles.image} />
+        </View>
+      )}
       <View style={styles.cardContent}>
         {subHeading && (
           <AppText variant="Regular" style={styles.cardSubHeading}>

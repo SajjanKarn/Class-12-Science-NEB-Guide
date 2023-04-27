@@ -1,15 +1,13 @@
 import { StyleSheet, View, ScrollView } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { gql, useQuery } from "@apollo/client";
 
 import AppText from "../components/AppText";
 import SubjectCard from "../components/SubjectCard";
 import Underline from "../components/Underline";
 import FadeInView from "../components/FadeInView";
 import Loader from "../components/Loader";
-
-import { gql, useQuery } from "@apollo/client";
 
 const QUERY_COLLECTION = gql`
   {

@@ -1,5 +1,7 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { ScrollView, StyleSheet, View, RefreshControl } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { gql, useQuery } from "@apollo/client";
 
 import AppText from "../components/AppText";
 import SubjectCard from "../components/SubjectCard";
@@ -7,11 +9,10 @@ import Underline from "../components/Underline";
 import FadeInView from "../components/FadeInView";
 import Loader from "../components/Loader";
 
-import { gql, useQuery } from "@apollo/client";
-
 export default function SubjectTopicsScreen() {
   const params = useRoute().params;
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
 
   const QUERY_COLLECTION = gql`
   {
@@ -19,7 +20,15 @@ export default function SubjectTopicsScreen() {
       topicsCollection {
         items {
           chapterTitle
-          chaptperNumber
+          chapterNumber
+          chapterThumbnail {
+            url
+          }
+          chapterContent {
+            sys {
+              id
+            }
+          }
 
           sys {
             id
@@ -29,7 +38,15 @@ export default function SubjectTopicsScreen() {
     }
   }
 `;
-  const { data, loading } = useQuery(QUERY_COLLECTION);
+  const { data, loading, refetch } = useQuery(QUERY_COLLECTION, {
+    fetchPolicy: "cache-and-network",
+  });
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetch();
+    setRefreshing(false);
+  };
 
   return (
     <>
@@ -39,6 +56,9 @@ export default function SubjectTopicsScreen() {
         <ScrollView
           style={styles.container}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           <View style={styles.contentContainer}>
             <AppText variant="Bold" style={styles.contentTitle}>
@@ -53,8 +73,13 @@ export default function SubjectTopicsScreen() {
                     <SubjectCard
                       key={topic.sys.id}
                       title={topic.chapterTitle}
-                      subHeading={`Chapter ${topic.chaptperNumber}`}
-                      onPress={() => navigation.navigate("TopicScreen")}
+                      // imageURL={topic.chapterThumbnail.url}
+                      subHeading={`Chapter ${topic.chapterNumber}`} // will fix this later
+                      onPress={() =>
+                        navigation.navigate("TopicScreen", {
+                          topicId: topic.chapterContent.sys.id,
+                        })
+                      }
                     />
                   </FadeInView>
                 ))}

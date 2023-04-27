@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.12",
+    "@contentful/rich-text-react-renderer": "^15.16.3",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-native-community/masked-view": "^0.1.11",
@@ -29,6 +30,7 @@
     "react-native-reanimated": "~2.14.4",
     "react-native-safe-area-context": "4.5.0",
     "react-native-screens": "~3.20.0",
+    "react-native-syntax-highlighter": "^2.1.0",
     "react-navigation": "^4.4.4"
   },
   "devDependencies": {

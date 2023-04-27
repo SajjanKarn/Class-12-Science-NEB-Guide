@@ -3,6 +3,10 @@ import { useFonts } from "expo-font";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { persistCache } from "apollo3-cache-persist";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import SubjectScreen from "./src/screens/SubjectScreen";
 import SubjectTopicsScreen from "./src/screens/SubjectTopicsScreen";
 import TopicScreen from "./src/screens/TopicScreen";
@@ -10,10 +14,6 @@ import TopicScreen from "./src/screens/TopicScreen";
 import Loader from "./src/components/Loader";
 
 import { API_URL, CDA_ACCESS_TOKEN } from "./src/config/api";
-
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { persistCache } from "apollo3-cache-persist";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const cache = new InMemoryCache();
 

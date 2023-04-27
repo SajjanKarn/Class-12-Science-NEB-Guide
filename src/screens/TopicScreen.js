@@ -1,25 +1,62 @@
 import { ScrollView, StyleSheet, StatusBar, View } from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import AppText from "../components/AppText";
 import Underline from "../components/Underline";
-import HeaderNavigation from "../components/HeaderNavigation";
+
+import { gql, useQuery } from "@apollo/client";
+import Loader from "../components/Loader";
+import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+
+import contentfulToReactnative from "../utils/richtext";
 
 export default function TopicScreen({ title = "Rotational Dynamics" }) {
-  return (
-    <View style={styles.container}>
-      {/* <HeaderNavigation /> */}
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <AppText variant="Bold" style={styles.topicTitle}>
-          {title}
-        </AppText>
+  const params = useRoute().params;
+  const navigation = useNavigation();
 
-        <Underline width={0.7 * 12 * title.length} />
-      </ScrollView>
-    </View>
+  const QUERY_COLLECTION = gql`
+  {
+    content(id: "${params.topicId}") {
+      contentTitle
+      contentSlug
+      content {
+        json
+      }
+    }
+  }
+`;
+  const { data, loading, refetch } = useQuery(QUERY_COLLECTION, {
+    fetchPolicy: "cache-and-network",
+  });
+
+  return (
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <View style={styles.container}>
+          {/* <HeaderNavigation /> */}
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+          >
+            <AppText variant="Bold" style={styles.topicTitle}>
+              {title}
+            </AppText>
+
+            <Underline width={0.7 * 12 * title.length} />
+
+            <View style={{ marginTop: height(2) }}>
+              {documentToReactComponents(
+                data?.content?.content?.json,
+                contentfulToReactnative
+              )}
+            </View>
+          </ScrollView>
+        </View>
+      )}
+    </>
   );
 }
 
