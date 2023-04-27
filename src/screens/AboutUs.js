@@ -55,6 +55,11 @@ export default function AboutUs() {
         🤞.
       </AppText>
 
+      <AppText variant="Bold" style={styles.contentTitle}>
+        Contributors
+      </AppText>
+      <Underline />
+
       <View style={styles.contributorsContainer}>
         {contributors.map((contributor, index) => (
           <View key={index} style={styles.contributorCard}>
@@ -108,12 +113,12 @@ const styles = StyleSheet.create({
   },
   ourMessage: {
     fontSize: totalSize(1.8),
+    lineHeight: totalSize(3),
   },
   contributorsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
-    marginTop: height(1.5),
     paddingBottom: height(3),
   },
   contributorCard: {
