@@ -13,7 +13,7 @@ import { gql, useQuery } from "@apollo/client";
 
 const QUERY_COLLECTION = gql`
   {
-    subjectsCollection {
+    subjectsCollection(order: [sys_publishedAt_ASC]) {
       items {
         title
         totalChapters
@@ -33,9 +33,8 @@ export default function SubjectScreen() {
     return <Loader />;
   }
 
-  console.log(data.subjectsCollection.items);
+  const [subjects, setSubjects] = useState(data.subjectsCollection.items || []);
 
-  const [subjects, setSubjects] = useState(data.subjectsCollection.items);
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.contentContainer}>
@@ -45,17 +44,18 @@ export default function SubjectScreen() {
         <Underline />
 
         <View style={styles.cardContainer}>
-          {subjects.map((subject) => (
-            <FadeInView key={subject.title} style={styles.fadeStyle}>
-              <SubjectCard
-                key={subject.title}
-                title={subject.title}
-                imageURL={subject.subjectThumbnail.url}
-                subHeading={`${subject.totalChapters} Chapters`}
-                onPress={() => navigation.navigate("SubjectTopicsScreen")}
-              />
-            </FadeInView>
-          ))}
+          {subjects &&
+            subjects.map((subject) => (
+              <FadeInView key={subject.title} style={styles.fadeStyle}>
+                <SubjectCard
+                  key={subject.title}
+                  title={subject.title}
+                  imageURL={subject.subjectThumbnail.url}
+                  subHeading={`${subject.totalChapters} Chapters`}
+                  onPress={() => navigation.navigate("SubjectTopicsScreen")}
+                />
+              </FadeInView>
+            ))}
         </View>
       </View>
 
