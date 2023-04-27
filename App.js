@@ -14,6 +14,19 @@ import TopicScreen from "./src/screens/TopicScreen";
 import Loader from "./src/components/Loader";
 
 import { API_URL, CDA_ACCESS_TOKEN } from "./src/config/api";
+import { AntDesign } from "@expo/vector-icons";
+import { TouchableNativeFeedback } from "react-native";
+import { MenuProvider } from "react-native-popup-menu";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
+
+import AboutUs from "./src/screens/AboutUs";
+
+import { useNavigation } from "@react-navigation/native";
 
 const cache = new InMemoryCache();
 
@@ -38,6 +51,40 @@ const AppStack = () => (
         headerTitleStyle: {
           fontFamily: "Poppins-Bold",
         },
+        headerRight: () => {
+          const navigation = useNavigation();
+
+          return (
+            <TouchableNativeFeedback
+              onPress={() => console.log("This feature is not available yet.")}
+            >
+              <Menu>
+                <MenuTrigger
+                  children={
+                    <AntDesign name="ellipsis1" size={24} color="black" />
+                  }
+                />
+                <MenuOptions
+                  customStyles={{
+                    optionWrapper: {
+                      padding: 10,
+                      paddingVertical: 15,
+                    },
+                  }}
+                >
+                  <MenuOption
+                    onSelect={() => navigation.navigate("AboutUs")}
+                    text="About Us"
+                  />
+                  <MenuOption
+                    onSelect={() => alert(`Save`)}
+                    text="Privacy Policy"
+                  />
+                </MenuOptions>
+              </Menu>
+            </TouchableNativeFeedback>
+          );
+        },
       }}
     />
     <Stack.Screen
@@ -55,6 +102,16 @@ const AppStack = () => (
       component={TopicScreen}
       options={{
         headerTitle: "Physics",
+        headerTitleStyle: {
+          fontFamily: "Poppins-Bold",
+        },
+      }}
+    />
+    <Stack.Screen
+      name="AboutUs"
+      component={AboutUs}
+      options={{
+        headerTitle: "About Us",
         headerTitleStyle: {
           fontFamily: "Poppins-Bold",
         },
@@ -94,7 +151,9 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <NavigationContainer>
-        <AppStack />
+        <MenuProvider>
+          <AppStack />
+        </MenuProvider>
       </NavigationContainer>
     </ApolloProvider>
   );

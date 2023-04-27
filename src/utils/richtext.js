@@ -1,7 +1,7 @@
-import { StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { View } from "react-native";
 import { MARKS, INLINES, BLOCKS } from "@contentful/rich-text-types";
-import { height, totalSize } from "react-native-dimension";
+import { height, totalSize, width } from "react-native-dimension";
 import AppText from "../components/AppText";
 
 import SyntaxHighlighter from "react-native-syntax-highlighter";
@@ -26,7 +26,12 @@ export default contentfulToReactnative = {
     },
     [MARKS.CODE]: (text) => {
       return (
-        <SyntaxHighlighter language="javascript" style={atomOneDark}>
+        <SyntaxHighlighter
+          language="javascript"
+          style={atomOneDark}
+          // custom style
+          customStyle={styles.customCodeStyle}
+        >
           {text}
         </SyntaxHighlighter>
       );
@@ -60,7 +65,6 @@ export default contentfulToReactnative = {
         </View>
       );
     },
-
     [BLOCKS.HEADING_1]: (_node, children) => (
       <AppText variant="Bold" style={styles.heading1}>
         {children}
@@ -114,18 +118,45 @@ export default contentfulToReactnative = {
     [BLOCKS.HR]: (_node, child) => {
       return <AppText style={styles.hr}>{child}</AppText>;
     },
+    // extract image and display it
+    [BLOCKS.EMBEDDED_ASSET]: (node) => {
+      console.log(node);
+      const { file } = node.data.target.fields;
+      const mimeType = file.contentType;
+      const mimeGroup = mimeType.split("/")[0];
+      switch (mimeGroup) {
+        case "image":
+          return <Image style={styles.image} source={{ uri: file.url }} />;
+        default:
+          return (
+            <span style={{ backgroundColor: "red" }}>
+              {mimeType} embedded asset
+            </span>
+          );
+      }
+    },
   },
 };
 
 const styles = StyleSheet.create({
+  image: {
+    width: "100%",
+    height: height(30),
+    resizeMode: "contain",
+    marginBottom: height(2),
+  },
   underline: {
     textDecorationLine: "underline",
   },
   subscript: {
-    fontSize: totalSize(0.7),
+    fontSize: totalSize(1.2),
+    // move the baseline a bit lower to align with superscript
+    transform: [{ translateY: -5 }],
   },
   superscript: {
-    fontSize: totalSize(0.7),
+    fontSize: totalSize(1.2),
+    // move the baseline a bit lower to align with subscript
+    transform: [{ translateY: 5 }],
   },
   paragraph: {
     fontSize: totalSize(1.8),
@@ -181,5 +212,10 @@ const styles = StyleSheet.create({
     fontSize: totalSize(1.8),
     lineHeight: totalSize(2.5),
     marginBottom: height(2),
+  },
+  customCodeStyle: {
+    borderRadius: totalSize(0.8),
+    fontSize: totalSize(1.8),
+    overflow: "hidden",
   },
 });

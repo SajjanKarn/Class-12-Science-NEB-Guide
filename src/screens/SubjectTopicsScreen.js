@@ -77,7 +77,8 @@ export default function SubjectTopicsScreen() {
                       subHeading={`Chapter ${topic.chapterNumber}`} // will fix this later
                       onPress={() =>
                         navigation.navigate("TopicScreen", {
-                          topicId: topic.chapterContent.sys.id,
+                          topicId: topic?.chapterContent?.sys?.id,
+                          title: topic.chapterTitle,
                         })
                       }
                     />

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, StatusBar, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
@@ -11,9 +11,8 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 
 import contentfulToReactnative from "../utils/richtext";
 
-export default function TopicScreen({ title = "Rotational Dynamics" }) {
+export default function TopicScreen() {
   const params = useRoute().params;
-  const navigation = useNavigation();
 
   const QUERY_COLLECTION = gql`
   {
@@ -26,7 +25,7 @@ export default function TopicScreen({ title = "Rotational Dynamics" }) {
     }
   }
 `;
-  const { data, loading, refetch } = useQuery(QUERY_COLLECTION, {
+  const { data, loading } = useQuery(QUERY_COLLECTION, {
     fetchPolicy: "cache-and-network",
   });
 
@@ -42,15 +41,20 @@ export default function TopicScreen({ title = "Rotational Dynamics" }) {
             showsVerticalScrollIndicator={false}
           >
             <AppText variant="Bold" style={styles.topicTitle}>
-              {title}
+              {params?.title}
             </AppText>
 
-            <Underline width={0.7 * 12 * title.length} />
+            <Underline width={0.7 * 12 * params?.title?.length} />
 
             <View style={{ marginTop: height(2) }}>
               {documentToReactComponents(
                 data?.content?.content?.json,
                 contentfulToReactnative
+              )}
+              {!data?.content?.content?.json && (
+                <AppText variant="SemiBold" style={styles.noContent}>
+                  Content not available yet!
+                </AppText>
               )}
             </View>
           </ScrollView>
@@ -71,6 +75,11 @@ const styles = StyleSheet.create({
     marginTop: height(2),
   },
   topicTitle: {
+    fontSize: totalSize(2.3),
+    marginTop: height(0.5),
+    marginBottom: height(0.2),
+  },
+  noContent: {
     fontSize: totalSize(2.3),
     marginTop: height(0.5),
     marginBottom: height(0.2),
