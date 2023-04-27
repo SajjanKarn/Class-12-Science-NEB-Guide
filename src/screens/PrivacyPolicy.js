@@ -1,15 +1,12 @@
-import { ScrollView, StyleSheet, View } from "react-native";
-import AppText from "../components/AppText";
-import { Modal } from "react-native";
-
+import { ScrollView, StyleSheet } from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
 
-export default function AboutUs() {
+import AppText from "../components/AppText";
+
+export default function PrivacyPolicy() {
   return (
     <ScrollView style={styles.container}>
-      <AppText variant="Bold" style={styles.contentTitle}>
-        About Us
-      </AppText>
+      <AppText>Privacy Policy</AppText>
     </ScrollView>
   );
 }

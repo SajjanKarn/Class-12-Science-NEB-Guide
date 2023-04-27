@@ -25,6 +25,7 @@ import {
 } from "react-native-popup-menu";
 
 import AboutUs from "./src/screens/AboutUs";
+import PrivacyPolicy from "./src/screens/PrivacyPolicy";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -77,7 +78,7 @@ const AppStack = () => (
                     text="About Us"
                   />
                   <MenuOption
-                    onSelect={() => alert(`Save`)}
+                    onSelect={() => navigation.navigate("PrivacyPolicy")}
                     text="Privacy Policy"
                   />
                 </MenuOptions>
@@ -112,6 +113,16 @@ const AppStack = () => (
       component={AboutUs}
       options={{
         headerTitle: "About Us",
+        headerTitleStyle: {
+          fontFamily: "Poppins-Bold",
+        },
+      }}
+    />
+    <Stack.Screen
+      name="PrivacyPolicy"
+      component={PrivacyPolicy}
+      options={{
+        headerTitle: "Privacy Policy",
         headerTitleStyle: {
           fontFamily: "Poppins-Bold",
         },
