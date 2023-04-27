@@ -11,7 +11,7 @@ import Loader from "../components/Loader";
 
 const QUERY_COLLECTION = gql`
   {
-    subjectsCollection(order: [sys_publishedAt_DESC]) {
+    subjectsCollection(order: sys_firstPublishedAt_ASC) {
       items {
         sys {
           id

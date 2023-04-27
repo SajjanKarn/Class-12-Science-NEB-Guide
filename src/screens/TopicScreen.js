@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
+import Lottie from "lottie-react-native";
 
 import AppText from "../components/AppText";
 import Underline from "../components/Underline";
@@ -52,9 +53,18 @@ export default function TopicScreen() {
                 contentfulToReactnative
               )}
               {!data?.content?.content?.json && (
-                <AppText variant="SemiBold" style={styles.noContent}>
-                  Content not available yet!
-                </AppText>
+                <>
+                  <AppText variant="SemiBold" style={styles.noContent}>
+                    Content not available yet!
+                  </AppText>
+
+                  <Lottie
+                    style={styles.animation}
+                    source={require("../../assets/animations/notfound.json")}
+                    autoPlay
+                    loop
+                  />
+                </>
               )}
             </View>
           </ScrollView>
@@ -83,5 +93,11 @@ const styles = StyleSheet.create({
     fontSize: totalSize(2.3),
     marginTop: height(0.5),
     marginBottom: height(0.2),
+  },
+  animation: {
+    width: width(80),
+    height: height(30),
+    marginTop: height(2),
+    alignSelf: "center",
   },
 });

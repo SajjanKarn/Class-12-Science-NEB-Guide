@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
-
 import { WebView } from "react-native-webview";
+
+import Loader from "../components/Loader";
 
 export default function PrivacyPolicy() {
   const links = [
@@ -13,6 +14,7 @@ export default function PrivacyPolicy() {
         uri: links[1],
       }}
       style={styles.container}
+      renderLoading={() => <Loader />}
     />
   );
 }

@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
-
 import { WebView } from "react-native-webview";
+
+import Loader from "../components/Loader";
 
 export default function TermsCondition() {
   const links = [
@@ -12,6 +13,7 @@ export default function TermsCondition() {
         uri: links[0],
       }}
       style={styles.container}
+      renderLoading={() => <Loader />}
     />
   );
 }
