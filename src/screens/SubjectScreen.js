@@ -13,8 +13,12 @@ import { gql, useQuery } from "@apollo/client";
 
 const QUERY_COLLECTION = gql`
   {
-    subjectsCollection(order: [sys_publishedAt_ASC]) {
+    subjectsCollection(order: [sys_publishedAt_DESC]) {
       items {
+        sys {
+          id
+        }
+
         title
         totalChapters
         subjectThumbnail {
@@ -28,39 +32,53 @@ const QUERY_COLLECTION = gql`
 export default function SubjectScreen() {
   const navigation = useNavigation();
   const { data, loading } = useQuery(QUERY_COLLECTION);
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  const [subjects, setSubjects] = useState(data.subjectsCollection.items || []);
-
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.contentContainer}>
-        <AppText variant="Bold" style={styles.contentTitle}>
-          Subjects
-        </AppText>
-        <Underline />
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.contentContainer}>
+            <AppText variant="Bold" style={styles.contentTitle}>
+              Subjects
+            </AppText>
+            <Underline />
 
-        <View style={styles.cardContainer}>
-          {subjects &&
-            subjects.map((subject) => (
-              <FadeInView key={subject.title} style={styles.fadeStyle}>
-                <SubjectCard
-                  key={subject.title}
-                  title={subject.title}
-                  imageURL={subject.subjectThumbnail.url}
-                  subHeading={`${subject.totalChapters} Chapters`}
-                  onPress={() => navigation.navigate("SubjectTopicsScreen")}
-                />
-              </FadeInView>
-            ))}
-        </View>
-      </View>
+            <View style={styles.cardContainer}>
+              {data?.subjectsCollection?.items &&
+                data?.subjectsCollection?.items.map((subject) => (
+                  <FadeInView key={subject.sys.id} style={styles.fadeStyle}>
+                    <SubjectCard
+                      key={subject.sys.id}
+                      title={subject.title}
+                      imageURL={subject.subjectThumbnail.url}
+                      subHeading={`${subject.totalChapters} Chapters`}
+                      onPress={() =>
+                        navigation.navigate("SubjectTopicsScreen", {
+                          subjectId: subject.sys.id,
+                        })
+                      }
+                    />
+                  </FadeInView>
+                ))}
+              {data?.subjectsCollection?.items.length === 0 && (
+                <AppText
+                  variant="Bold"
+                  style={{ textAlign: "center", marginTop: 20 }}
+                >
+                  No Subjects Found
+                </AppText>
+              )}
+            </View>
+          </View>
 
-      <StatusBar style="auto" />
-    </ScrollView>
+          <StatusBar style="auto" />
+        </ScrollView>
+      )}
+    </>
   );
 }
 

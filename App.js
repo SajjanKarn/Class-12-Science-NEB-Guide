@@ -44,7 +44,7 @@ const AppStack = () => (
       name="SubjectTopicsScreen"
       component={SubjectTopicsScreen}
       options={{
-        headerTitle: "Physics",
+        headerTitle: "Choose a Topic",
         headerTitleStyle: {
           fontFamily: "Poppins-Bold",
         },

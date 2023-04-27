@@ -1,45 +1,73 @@
 import { ScrollView, StyleSheet, View } from "react-native";
-import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import AppText from "../components/AppText";
 import SubjectCard from "../components/SubjectCard";
 import Underline from "../components/Underline";
 import FadeInView from "../components/FadeInView";
+import Loader from "../components/Loader";
+
+import { gql, useQuery } from "@apollo/client";
 
 export default function SubjectTopicsScreen() {
+  const params = useRoute().params;
   const navigation = useNavigation();
-  const [topics, setTopics] = useState([
-    { id: 1, title: "Introduction to Database" },
-    { id: 2, title: "Database Design" },
-    { id: 3, title: "Database Implementation" },
-    { id: 4, title: "Database Management" },
-    { id: 5, title: "Database Administration" },
-    { id: 6, title: "Database Security" },
-  ]);
+
+  const QUERY_COLLECTION = gql`
+  {
+    subjects(id: "${params.subjectId}") {
+      topicsCollection {
+        items {
+          chapterTitle
+          chaptperNumber
+
+          sys {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+  const { data, loading } = useQuery(QUERY_COLLECTION);
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.contentContainer}>
-        <AppText variant="Bold" style={styles.contentTitle}>
-          Topics
-        </AppText>
-        <Underline />
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.contentContainer}>
+            <AppText variant="Bold" style={styles.contentTitle}>
+              Topics
+            </AppText>
+            <Underline />
 
-        <View style={styles.cardContainer}>
-          {topics.map((topic) => (
-            <FadeInView key={topic.id} style={styles.fadeStyle}>
-              <SubjectCard
-                key={topic.id}
-                title={topic.title}
-                subHeading={`Chapter ${topic.id}`}
-                onPress={() => navigation.navigate("TopicScreen")}
-              />
-            </FadeInView>
-          ))}
-        </View>
-      </View>
-    </ScrollView>
+            <View style={styles.cardContainer}>
+              {data?.subjects?.topicsCollection?.items &&
+                data?.subjects?.topicsCollection?.items.map((topic) => (
+                  <FadeInView key={topic.sys.id} style={styles.fadeStyle}>
+                    <SubjectCard
+                      key={topic.sys.id}
+                      title={topic.chapterTitle}
+                      subHeading={`Chapter ${topic.chaptperNumber}`}
+                      onPress={() => navigation.navigate("TopicScreen")}
+                    />
+                  </FadeInView>
+                ))}
+              {data?.subjects?.topicsCollection?.items.length === 0 && (
+                <AppText variant="Bold" style={styles.contentTitle}>
+                  No topics found!
+                </AppText>
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      )}
+    </>
   );
 }
 
