@@ -9,10 +9,21 @@ import Underline from "../components/Underline";
 import FadeInView from "../components/FadeInView";
 import Loader from "../components/Loader";
 
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
+
+const adUnitId = __DEV__
+  ? TestIds.BANNER
+  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+
 export default function SubjectTopicsScreen() {
   const params = useRoute().params;
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
+  const [adNotFailed, setAdNotFailed] = useState(true);
 
   const QUERY_COLLECTION = gql`
   {
@@ -53,45 +64,58 @@ export default function SubjectTopicsScreen() {
       {loading ? (
         <Loader />
       ) : (
-        <ScrollView
-          style={styles.container}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <View style={styles.contentContainer}>
-            <AppText variant="Bold" style={styles.contentTitle}>
-              Topics
-            </AppText>
-            <Underline />
+        <>
+          {adNotFailed && (
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+              onAdFailedToLoad={() => setAdNotFailed(false)}
+            />
+          )}
 
-            <View style={styles.cardContainer}>
-              {data?.subjects?.topicsCollection?.items &&
-                data?.subjects?.topicsCollection?.items.map((topic) => (
-                  <FadeInView key={topic.sys.id} style={styles.fadeStyle}>
-                    <SubjectCard
-                      key={topic.sys.id}
-                      title={topic.chapterTitle}
-                      // imageURL={topic.chapterThumbnail.url}
-                      subHeading={`Chapter ${topic.chapterNumber}`} // will fix this later
-                      onPress={() =>
-                        navigation.navigate("TopicScreen", {
-                          topicId: topic?.chapterContent?.sys?.id,
-                          title: topic.chapterTitle,
-                        })
-                      }
-                    />
-                  </FadeInView>
-                ))}
-              {data?.subjects?.topicsCollection?.items.length === 0 && (
-                <AppText variant="Bold" style={styles.contentTitle}>
-                  No topics found!
-                </AppText>
-              )}
+          <ScrollView
+            style={styles.container}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            <View style={styles.contentContainer}>
+              <AppText variant="Bold" style={styles.contentTitle}>
+                Topics
+              </AppText>
+              <Underline />
+
+              <View style={styles.cardContainer}>
+                {data?.subjects?.topicsCollection?.items &&
+                  data?.subjects?.topicsCollection?.items.map((topic) => (
+                    <FadeInView key={topic.sys.id} style={styles.fadeStyle}>
+                      <SubjectCard
+                        key={topic.sys.id}
+                        title={topic.chapterTitle}
+                        // imageURL={topic.chapterThumbnail.url}
+                        subHeading={`Chapter ${topic.chapterNumber}`} // will fix this later
+                        onPress={() =>
+                          navigation.navigate("TopicScreen", {
+                            topicId: topic?.chapterContent?.sys?.id,
+                            title: topic.chapterTitle,
+                          })
+                        }
+                      />
+                    </FadeInView>
+                  ))}
+                {data?.subjects?.topicsCollection?.items.length === 0 && (
+                  <AppText variant="Bold" style={styles.contentTitle}>
+                    No topics found!
+                  </AppText>
+                )}
+              </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </>
       )}
     </>
   );

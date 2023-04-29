@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -40,20 +41,23 @@ const QUERY_COLLECTION = gql`
 export default function SubjectScreen() {
   const navigation = useNavigation();
   const { data, loading } = useQuery(QUERY_COLLECTION);
+  const [adNotFailed, setAdNotFailed] = useState(true);
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <>
-          <BannerAd
-            unitId={adUnitId}
-            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-            onAdFailedToLoad={(error) => console.error(error)}
-          />
+          {adNotFailed && (
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+              onAdFailedToLoad={() => setAdNotFailed(false)}
+            />
+          )}
           <ScrollView
             style={styles.container}
             showsVerticalScrollIndicator={false}

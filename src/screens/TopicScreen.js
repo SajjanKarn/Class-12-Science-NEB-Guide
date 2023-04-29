@@ -14,40 +14,44 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 import contentfulToReactnative from "../utils/richtext";
 
 import {
-  RewardedAd,
+  RewardedInterstitialAd,
   RewardedAdEventType,
   TestIds,
 } from "react-native-google-mobile-ads";
 
 const adUnitId = __DEV__
-  ? TestIds.REWARDED
+  ? TestIds.REWARDED_INTERSTITIAL
   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
 
-const rewarded = RewardedAd.createForAdRequest(adUnitId, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ["fashion", "clothing"],
-});
+const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
+  adUnitId,
+  {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ["fashion", "clothing"],
+  }
+);
 
 export default function TopicScreen() {
   const params = useRoute().params;
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const unsubscribeLoaded = rewarded.addAdEventListener(
+    const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
       RewardedAdEventType.LOADED,
       () => {
         setLoaded(true);
+        rewardedInterstitial.show();
       }
     );
-    const unsubscribeEarned = rewarded.addAdEventListener(
+    const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
       (reward) => {
         console.log("User earned reward of ", reward);
       }
     );
 
-    // Start loading the rewarded ad straight away
-    rewarded.load();
+    // Start loading the rewarded interstitial ad straight away
+    rewardedInterstitial.load();
 
     // Unsubscribe from events on unmount
     return () => {
