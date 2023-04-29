@@ -14,7 +14,9 @@ export default function PrivacyPolicy() {
         uri: links[1],
       }}
       style={styles.container}
+      startInLoadingState={true}
       renderLoading={() => <Loader />}
+      onLoadStart={() => <Loader />}
     />
   );
 }

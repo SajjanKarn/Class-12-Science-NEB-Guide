@@ -14,6 +14,8 @@ export default function TermsCondition() {
       }}
       style={styles.container}
       renderLoading={() => <Loader />}
+      startInLoadingState={true}
+      onLoadStart={() => <Loader />}
     />
   );
 }

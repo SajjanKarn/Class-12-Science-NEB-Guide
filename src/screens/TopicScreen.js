@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
 import { useRoute } from "@react-navigation/native";
@@ -12,8 +13,48 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 
 import contentfulToReactnative from "../utils/richtext";
 
+import {
+  RewardedAd,
+  RewardedAdEventType,
+  TestIds,
+} from "react-native-google-mobile-ads";
+
+const adUnitId = __DEV__
+  ? TestIds.REWARDED
+  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+
+const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ["fashion", "clothing"],
+});
+
 export default function TopicScreen() {
   const params = useRoute().params;
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(
+      RewardedAdEventType.LOADED,
+      () => {
+        setLoaded(true);
+      }
+    );
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward) => {
+        console.log("User earned reward of ", reward);
+      }
+    );
+
+    // Start loading the rewarded ad straight away
+    rewarded.load();
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
 
   const QUERY_COLLECTION = gql`
   {

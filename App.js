@@ -24,11 +24,13 @@ import {
   MenuTrigger,
 } from "react-native-popup-menu";
 
+import { useNavigation } from "@react-navigation/native";
 import AboutUs from "./src/screens/AboutUs";
 import PrivacyPolicy from "./src/screens/PrivacyPolicy";
 
-import { useNavigation } from "@react-navigation/native";
 import TermsCondition from "./src/screens/TermsCondition";
+
+import "expo-dev-client";
 
 const cache = new InMemoryCache();
 

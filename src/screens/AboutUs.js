@@ -1,101 +1,87 @@
 import { ScrollView, StyleSheet, View, Linking, Image } from "react-native";
-import { useState } from "react";
 import { width, height, totalSize } from "react-native-dimension";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { gql, useQuery } from "@apollo/client";
 
 import AppText from "../components/AppText";
 import Underline from "../components/Underline";
 import colors from "../config/colors";
+import Loader from "../components/Loader";
+
+const QUERY_COLLECTION = gql`
+  {
+    aboutPage(id: "2r68EIEPDDzFQNHRBskGHh") {
+      aboutUs
+      contributors
+    }
+  }
+`;
 
 export default function AboutUs() {
-  const [contributors, setContributors] = useState([
-    {
-      name: "Sajjan Karna",
-      role: "Developer",
-      image: `https://avatars.githubusercontent.com/u/49333264?v=4`,
-      facebook: "https://www.facebook.com/sajjankarna",
-      instagram: "https://www.instagram.com/sajjan.sh/",
-    },
-    {
-      name: "Prabin Gautam",
-      role: "Content Writer",
-      image: `https://avatars.githubusercontent.com/u/29686102?v=4`,
-      facebook: "https://www.facebook.com/prabin.gautam.395",
-      instagram: "https://www.instagram.com/prabin_gautam_/",
-    },
-    {
-      name: "Raman Shrestha",
-      role: "Content Writer",
-      image: `https://avatars.githubusercontent.com/u/29686102?v=4`,
-      facebook: "https://www.facebook.com/raman.shrestha.9",
-      instagram: "https://www.instagram.com/raman_shrestha_/",
-    },
-    {
-      name: "Sajid Miya",
-      role: "Content Writer",
-      image: `https://avatars.githubusercontent.com/u/29686102?v=4`,
-      facebook: "https://www.facebook.com/sajid.miya.5",
-      instagram: "https://www.instagram.com/sajid_miya_/",
-    },
-  ]);
+  const { data, loading } = useQuery(QUERY_COLLECTION);
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <AppText variant="Bold" style={styles.contentTitle}>
-        About Us
-      </AppText>
-      <Underline />
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText variant="Bold" style={styles.contentTitle}>
+            About Us
+          </AppText>
+          <Underline />
 
-      <AppText style={styles.ourMessage}>
-        We are group of students from St. Xavier's College, Maitighar. We
-        understand that studying for class 12 science NEB exams can be a
-        daunting task. That's why we have developed an app that is designed to
-        make your life easier. Our app provides all the important topics, notes,
-        and questions in one place, so you can study efficiently and
-        effectively. We hope you find our app useful and wish you all the best
-        🤞.
-      </AppText>
+          <AppText style={styles.ourMessage}>
+            {data?.aboutPage?.aboutUs}
+          </AppText>
 
-      <AppText variant="Bold" style={styles.contentTitle}>
-        Contributors
-      </AppText>
-      <Underline />
+          <AppText variant="Bold" style={styles.contentTitle}>
+            Contributors
+          </AppText>
+          <Underline />
 
-      <View style={styles.contributorsContainer}>
-        {contributors.map((contributor, index) => (
-          <View key={index} style={styles.contributorCard}>
-            <View style={styles.imageContainer}>
-              <Image
-                source={{ uri: contributor.image }}
-                style={styles.contributorImage}
-              />
-            </View>
-            <AppText variant="Bold" style={styles.contributorName}>
-              {contributor.name}
-            </AppText>
-            <AppText style={styles.contributorRole}>{contributor.role}</AppText>
+          <View style={styles.contributorsContainer}>
+            {data?.aboutPage?.contributors?.map((contributor, index) => (
+              <View key={index} style={styles.contributorCard}>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={{ uri: contributor.image }}
+                    style={styles.contributorImage}
+                  />
+                </View>
+                <AppText variant="Bold" style={styles.contributorName}>
+                  {contributor.name}
+                </AppText>
+                <AppText style={styles.contributorRole}>
+                  {contributor.role}
+                </AppText>
 
-            <View style={styles.contributorSocial}>
-              <View style={styles.socialIcon}>
-                <FontAwesome5
-                  name="facebook"
-                  size={25}
-                  color={colors.facebook}
-                  onPress={() => Linking.openURL(contributor.facebook)}
-                />
+                <View style={styles.contributorSocial}>
+                  <View style={styles.socialIcon}>
+                    <FontAwesome5
+                      name="facebook"
+                      size={25}
+                      color={colors.facebook}
+                      onPress={() => Linking.openURL(contributor.facebook)}
+                    />
+                  </View>
+                  <View style={styles.socialIcon}>
+                    <FontAwesome5
+                      name="instagram"
+                      size={25}
+                      color={colors.instagram}
+                      onPress={() => Linking.openURL(contributor.instagram)}
+                    />
+                  </View>
+                </View>
               </View>
-              <View style={styles.socialIcon}>
-                <FontAwesome5
-                  name="instagram"
-                  size={25}
-                  color={colors.instagram}
-                  onPress={() => Linking.openURL(contributor.instagram)}
-                />
-              </View>
-            </View>
+            ))}
           </View>
-        ))}
-      </View>
-    </ScrollView>
+        </ScrollView>
+      )}
+    </>
   );
 }
 

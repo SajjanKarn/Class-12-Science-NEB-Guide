@@ -9,6 +9,16 @@ import Underline from "../components/Underline";
 import FadeInView from "../components/FadeInView";
 import Loader from "../components/Loader";
 
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
+
+const adUnitId = __DEV__
+  ? TestIds.BANNER
+  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+
 const QUERY_COLLECTION = gql`
   {
     subjectsCollection(order: sys_firstPublishedAt_ASC) {
@@ -35,46 +45,56 @@ export default function SubjectScreen() {
       {loading ? (
         <Loader />
       ) : (
-        <ScrollView
-          style={styles.container}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.contentContainer}>
-            <AppText variant="Bold" style={styles.contentTitle}>
-              Subjects
-            </AppText>
-            <Underline />
+        <>
+          <BannerAd
+            unitId={adUnitId}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+            onAdFailedToLoad={(error) => console.error(error)}
+          />
+          <ScrollView
+            style={styles.container}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.contentContainer}>
+              <AppText variant="Bold" style={styles.contentTitle}>
+                Subjects
+              </AppText>
+              <Underline />
 
-            <View style={styles.cardContainer}>
-              {data?.subjectsCollection?.items &&
-                data?.subjectsCollection?.items.map((subject) => (
-                  <FadeInView key={subject.sys.id} style={styles.fadeStyle}>
-                    <SubjectCard
-                      key={subject.sys.id}
-                      title={subject.title}
-                      imageURL={subject.subjectThumbnail.url}
-                      subHeading={`${subject.totalChapters} Chapters`}
-                      onPress={() =>
-                        navigation.navigate("SubjectTopicsScreen", {
-                          subjectId: subject.sys.id,
-                        })
-                      }
-                    />
-                  </FadeInView>
-                ))}
-              {data?.subjectsCollection?.items.length === 0 && (
-                <AppText
-                  variant="Bold"
-                  style={{ textAlign: "center", marginTop: 20 }}
-                >
-                  No Subjects Found
-                </AppText>
-              )}
+              <View style={styles.cardContainer}>
+                {data?.subjectsCollection?.items &&
+                  data?.subjectsCollection?.items.map((subject) => (
+                    <FadeInView key={subject.sys.id} style={styles.fadeStyle}>
+                      <SubjectCard
+                        key={subject.sys.id}
+                        title={subject.title}
+                        imageURL={subject.subjectThumbnail.url}
+                        subHeading={`${subject.totalChapters} Chapters`}
+                        onPress={() =>
+                          navigation.navigate("SubjectTopicsScreen", {
+                            subjectId: subject.sys.id,
+                          })
+                        }
+                      />
+                    </FadeInView>
+                  ))}
+                {data?.subjectsCollection?.items.length === 0 && (
+                  <AppText
+                    variant="Bold"
+                    style={{ textAlign: "center", marginTop: 20 }}
+                  >
+                    No Subjects Found
+                  </AppText>
+                )}
+              </View>
             </View>
-          </View>
 
-          <StatusBar style="auto" />
-        </ScrollView>
+            <StatusBar style="auto" />
+          </ScrollView>
+        </>
       )}
     </>
   );
