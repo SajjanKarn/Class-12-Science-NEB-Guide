@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
 import { useRoute } from "@react-navigation/native";
@@ -18,6 +18,8 @@ import {
   RewardedAdEventType,
   TestIds,
 } from "react-native-google-mobile-ads";
+import colors from "../config/colors";
+import ThemeContext from "../context/ThemeContext";
 
 const adUnitId = __DEV__
   ? TestIds.REWARDED_INTERSTITIAL
@@ -32,6 +34,7 @@ const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
 );
 
 export default function TopicScreen() {
+  const { isDarkMode } = useContext(ThemeContext);
   const params = useRoute().params;
   const [loaded, setLoaded] = useState(false);
 
@@ -80,40 +83,44 @@ export default function TopicScreen() {
       {loading ? (
         <Loader />
       ) : (
-        <View style={styles.container}>
-          {/* <HeaderNavigation /> */}
-          <ScrollView
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={false}
-          >
-            <AppText variant="Bold" style={styles.topicTitle}>
-              {params?.title}
-            </AppText>
+        <ScrollView
+          style={[
+            styles.container,
+            {
+              backgroundColor: isDarkMode
+                ? colors.dark.background
+                : colors.light.white,
+            },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText variant="Bold" style={styles.topicTitle}>
+            {params?.title}
+          </AppText>
 
-            <Underline width={0.7 * 12 * params?.title?.length} />
+          <Underline width={0.7 * 12 * params?.title?.length} />
 
-            <View style={{ marginTop: height(2) }}>
-              {documentToReactComponents(
-                data?.content?.content?.json,
-                contentfulToReactnative
-              )}
-              {!data?.content?.content?.json && (
-                <>
-                  <AppText variant="SemiBold" style={styles.noContent}>
-                    Content not available yet!
-                  </AppText>
+          <View style={{ marginTop: height(2) }}>
+            {documentToReactComponents(
+              data?.content?.content?.json,
+              contentfulToReactnative
+            )}
+            {!data?.content?.content?.json && (
+              <>
+                <AppText variant="SemiBold" style={styles.noContent}>
+                  Content not available yet!
+                </AppText>
 
-                  <Lottie
-                    style={styles.animation}
-                    source={require("../../assets/animations/notfound.json")}
-                    autoPlay
-                    loop
-                  />
-                </>
-              )}
-            </View>
-          </ScrollView>
-        </View>
+                <Lottie
+                  style={styles.animation}
+                  source={require("../../assets/animations/notfound.json")}
+                  autoPlay
+                  loop
+                />
+              </>
+            )}
+          </View>
+        </ScrollView>
       )}
     </>
   );
@@ -122,12 +129,9 @@ export default function TopicScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.light.white,
+    paddingVertical: height(2),
     paddingHorizontal: width(5),
-  },
-  scrollView: {
-    flex: 1,
-    marginTop: height(2),
   },
   topicTitle: {
     fontSize: totalSize(2.3),

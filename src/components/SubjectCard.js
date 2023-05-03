@@ -1,6 +1,8 @@
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import colors from "../config/colors";
 import AppText from "./AppText";
+import { useContext } from "react";
+import ThemeContext from "../context/ThemeContext";
 
 export default function SubjectCard({
   title = "Subject",
@@ -8,9 +10,18 @@ export default function SubjectCard({
   onPress = () => {},
   imageURL = "https://images.pexels.com/photos/583475/pexels-photo-583475.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
 }) {
+  const { isDarkMode } = useContext(ThemeContext);
+
   return (
     <TouchableOpacity
-      style={styles.cardContainer}
+      style={[
+        styles.cardContainer,
+        {
+          backgroundColor: isDarkMode
+            ? colors.dark.cardBackground
+            : colors.light.cardBackground,
+        },
+      ]}
       onPress={onPress}
       activeOpacity={0.7}
     >
@@ -36,7 +47,7 @@ export default function SubjectCard({
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: colors.cardBackground,
+    backgroundColor: colors.light.cardBackground,
     width: "100%",
     height: 200,
     marginVertical: 10,
@@ -67,6 +78,5 @@ const styles = StyleSheet.create({
   },
   cardSubHeading: {
     fontSize: 13,
-    color: colors.textSecondary,
   },
 });

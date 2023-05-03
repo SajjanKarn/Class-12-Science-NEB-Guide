@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ScrollView, StyleSheet, View, RefreshControl } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { gql, useQuery } from "@apollo/client";
@@ -14,6 +14,8 @@ import {
   BannerAdSize,
   TestIds,
 } from "react-native-google-mobile-ads";
+import colors from "../config/colors";
+import ThemeContext from "../context/ThemeContext";
 
 const adUnitId = __DEV__
   ? TestIds.BANNER
@@ -22,6 +24,7 @@ const adUnitId = __DEV__
 export default function SubjectTopicsScreen() {
   const params = useRoute().params;
   const navigation = useNavigation();
+  const { isDarkMode } = useContext(ThemeContext);
   const [refreshing, setRefreshing] = useState(false);
   const [adNotFailed, setAdNotFailed] = useState(true);
 
@@ -77,7 +80,14 @@ export default function SubjectTopicsScreen() {
           )}
 
           <ScrollView
-            style={styles.container}
+            style={[
+              styles.container,
+              {
+                backgroundColor: isDarkMode
+                  ? colors.dark.background
+                  : colors.light.background,
+              },
+            ]}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -124,7 +134,7 @@ export default function SubjectTopicsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.light.white,
   },
   contentContainer: {
     flex: 1,

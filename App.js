@@ -1,21 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
-
+import { NavigationContainer, ThemeProvider } from "@react-navigation/native";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { persistCache } from "apollo3-cache-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import SubjectScreen from "./src/screens/SubjectScreen";
-import SubjectTopicsScreen from "./src/screens/SubjectTopicsScreen";
-import TopicScreen from "./src/screens/TopicScreen";
-
-import Loader from "./src/components/Loader";
-
-import { API_URL, CDA_ACCESS_TOKEN } from "./src/config/api";
-import { AntDesign } from "@expo/vector-icons";
-import { TouchableNativeFeedback } from "react-native";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import { TouchableNativeFeedback, useColorScheme } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import {
   Menu,
@@ -23,14 +14,22 @@ import {
   MenuOption,
   MenuTrigger,
 } from "react-native-popup-menu";
-
 import { useNavigation } from "@react-navigation/native";
+
+import SubjectScreen from "./src/screens/SubjectScreen";
+import SubjectTopicsScreen from "./src/screens/SubjectTopicsScreen";
+import TopicScreen from "./src/screens/TopicScreen";
 import AboutUs from "./src/screens/AboutUs";
 import PrivacyPolicy from "./src/screens/PrivacyPolicy";
-
 import TermsCondition from "./src/screens/TermsCondition";
 
+import Loader from "./src/components/Loader";
+
+import { API_URL, CDA_ACCESS_TOKEN } from "./src/config/api";
+
 import "expo-dev-client";
+import colors from "./src/config/colors";
+import ThemeContext, { ThemeContextProvider } from "./src/context/ThemeContext";
 
 const cache = new InMemoryCache();
 
@@ -45,108 +44,166 @@ const client = new ApolloClient({
 
 const Stack = createNativeStackNavigator();
 
-const AppStack = () => (
-  <Stack.Navigator initialRouteName="SubjectScreen">
-    <Stack.Screen
-      name="SubjectScreen"
-      component={SubjectScreen}
-      options={{
-        headerTitle: "Home",
-        headerTitleStyle: {
-          fontFamily: "Poppins-Bold",
-        },
-        headerRight: () => {
-          const navigation = useNavigation();
+const AppStack = () => {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
-          return (
-            <TouchableNativeFeedback
-              onPress={() => console.log("This feature is not available yet.")}
-            >
-              <Menu>
-                <MenuTrigger
-                  children={
-                    <AntDesign name="ellipsis1" size={24} color="black" />
+  return (
+    <Stack.Navigator
+      initialRouteName="SubjectScreen"
+      screenOptions={{
+        headerTitleStyle: {
+          fontFamily: "Poppins-Bold",
+          color: isDarkMode ? colors.dark.textColor : colors.light.textColor,
+        },
+        headerStyle: {
+          backgroundColor: isDarkMode
+            ? colors.dark.cardBackground
+            : colors.light.white,
+        },
+
+        headerTintColor: isDarkMode
+          ? colors.dark.textColor
+          : colors.light.textColor,
+      }}
+    >
+      <Stack.Screen
+        name="SubjectScreen"
+        component={SubjectScreen}
+        options={{
+          headerTitle: "Home",
+
+          headerRight: () => {
+            const navigation = useNavigation();
+
+            return (
+              <TouchableNativeFeedback
+                onPress={() =>
+                  console.log("This feature is not available yet.")
+                }
+              >
+                <Menu>
+                  <MenuTrigger
+                    children={
+                      <AntDesign
+                        name="ellipsis1"
+                        size={24}
+                        color={
+                          isDarkMode
+                            ? colors.dark.textColor
+                            : colors.light.textColor
+                        }
+                      />
+                    }
+                  />
+                  <MenuOptions
+                    customStyles={{
+                      optionWrapper: {
+                        padding: 10,
+                        paddingVertical: 15,
+                        backgroundColor: isDarkMode
+                          ? colors.dark.cardBackground
+                          : colors.light.white,
+                      },
+                    }}
+                  >
+                    <MenuOption
+                      onSelect={() => navigation.navigate("AboutUs")}
+                      text="About Us"
+                      customStyles={{
+                        optionText: {
+                          color: isDarkMode
+                            ? colors.dark.textColor
+                            : colors.light.textColor,
+                        },
+                      }}
+                    />
+                    <MenuOption
+                      onSelect={() => navigation.navigate("PrivacyPolicy")}
+                      text="Privacy Policy"
+                      customStyles={{
+                        optionText: {
+                          color: isDarkMode
+                            ? colors.dark.textColor
+                            : colors.light.textColor,
+                        },
+                      }}
+                    />
+                    <MenuOption
+                      onSelect={() => navigation.navigate("TermsCondition")}
+                      text="Terms & Condition"
+                      customStyles={{
+                        optionText: {
+                          color: isDarkMode
+                            ? colors.dark.textColor
+                            : colors.light.textColor,
+                        },
+                      }}
+                    />
+                  </MenuOptions>
+                </Menu>
+              </TouchableNativeFeedback>
+            );
+          },
+
+          // toggle theme button
+          headerLeft: () => {
+            return (
+              <TouchableNativeFeedback
+                onPress={() => {
+                  toggleTheme();
+                }}
+              >
+                <Feather
+                  name={isDarkMode ? "sun" : "moon"}
+                  size={20}
+                  color={
+                    isDarkMode ? colors.dark.textColor : colors.light.textColor
                   }
+                  style={{ marginLeft: 5, marginRight: 10, padding: 15 }}
                 />
-                <MenuOptions
-                  customStyles={{
-                    optionWrapper: {
-                      padding: 10,
-                      paddingVertical: 15,
-                    },
-                  }}
-                >
-                  <MenuOption
-                    onSelect={() => navigation.navigate("AboutUs")}
-                    text="About Us"
-                  />
-                  <MenuOption
-                    onSelect={() => navigation.navigate("PrivacyPolicy")}
-                    text="Privacy Policy"
-                  />
-                  <MenuOption
-                    onSelect={() => navigation.navigate("TermsCondition")}
-                    text="Terms & Condition"
-                  />
-                </MenuOptions>
-              </Menu>
-            </TouchableNativeFeedback>
-          );
-        },
-      }}
-    />
-    <Stack.Screen
-      name="SubjectTopicsScreen"
-      component={SubjectTopicsScreen}
-      options={{
-        headerTitle: "Choose a Topic",
-        headerTitleStyle: {
-          fontFamily: "Poppins-Bold",
-        },
-      }}
-    />
-    <Stack.Screen
-      name="TopicScreen"
-      component={TopicScreen}
-      options={{
-        headerTitle: "Physics",
-        headerTitleStyle: {
-          fontFamily: "Poppins-Bold",
-        },
-      }}
-    />
-    <Stack.Screen
-      name="AboutUs"
-      component={AboutUs}
-      options={{
-        headerTitle: "About Us",
-        headerTitleStyle: {
-          fontFamily: "Poppins-Bold",
-        },
-      }}
-    />
-    <Stack.Screen
-      name="PrivacyPolicy"
-      component={PrivacyPolicy}
-      options={{
-        headerTitle: "Privacy Policy",
-        headerTitleStyle: {
-          fontFamily: "Poppins-Bold",
-        },
-      }}
-    />
-    <Stack.Screen
-      name="TermsCondition"
-      component={TermsCondition}
-      options={{
-        headerTitle: "Terms & Condition",
-        headerTitleStyle: {
-          fontFamily: "Poppins-Bold",
-        },
-      }}
-    />
-  </Stack.Navigator>
-);
+              </TouchableNativeFeedback>
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="SubjectTopicsScreen"
+        component={SubjectTopicsScreen}
+        options={{
+          headerTitle: "Choose a Topic",
+        }}
+      />
+      <Stack.Screen
+        name="TopicScreen"
+        component={TopicScreen}
+        options={{
+          headerTitle: "Physics",
+        }}
+      />
+      <Stack.Screen
+        name="AboutUs"
+        component={AboutUs}
+        options={{
+          headerTitle: "About Us",
+        }}
+      />
+      <Stack.Screen
+        name="PrivacyPolicy"
+        component={PrivacyPolicy}
+        options={{
+          headerTitle: "Privacy Policy",
+        }}
+      />
+      <Stack.Screen
+        name="TermsCondition"
+        component={TermsCondition}
+        options={{
+          headerTitle: "Terms & Condition",
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
 
 export default function App() {
   const [loadingCache, setLoadingCache] = useState(true);
@@ -178,11 +235,13 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
-        <MenuProvider>
-          <AppStack />
-        </MenuProvider>
-      </NavigationContainer>
+      <ThemeContextProvider>
+        <NavigationContainer>
+          <MenuProvider>
+            <AppStack />
+          </MenuProvider>
+        </NavigationContainer>
+      </ThemeContextProvider>
     </ApolloProvider>
   );
 }

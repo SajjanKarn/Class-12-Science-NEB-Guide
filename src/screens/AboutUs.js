@@ -7,6 +7,8 @@ import AppText from "../components/AppText";
 import Underline from "../components/Underline";
 import colors from "../config/colors";
 import Loader from "../components/Loader";
+import { useContext } from "react";
+import ThemeContext from "../context/ThemeContext";
 
 const QUERY_COLLECTION = gql`
   {
@@ -18,6 +20,8 @@ const QUERY_COLLECTION = gql`
 `;
 
 export default function AboutUs() {
+  const { isDarkMode } = useContext(ThemeContext);
+
   const { data, loading } = useQuery(QUERY_COLLECTION);
   return (
     <>
@@ -25,7 +29,14 @@ export default function AboutUs() {
         <Loader />
       ) : (
         <ScrollView
-          style={styles.container}
+          style={[
+            styles.container,
+            {
+              backgroundColor: isDarkMode
+                ? colors.dark.background
+                : colors.light.white,
+            },
+          ]}
           showsVerticalScrollIndicator={false}
         >
           <AppText variant="Bold" style={styles.contentTitle}>
@@ -44,7 +55,17 @@ export default function AboutUs() {
 
           <View style={styles.contributorsContainer}>
             {data?.aboutPage?.contributors?.map((contributor, index) => (
-              <View key={index} style={styles.contributorCard}>
+              <View
+                key={index}
+                style={[
+                  styles.contributorCard,
+                  {
+                    backgroundColor: isDarkMode
+                      ? colors.dark.cardBackground
+                      : colors.light.cardBackground,
+                  },
+                ]}
+              >
                 <View style={styles.imageContainer}>
                   <Image
                     source={{ uri: contributor.image }}
@@ -88,7 +109,7 @@ export default function AboutUs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.light.white,
     paddingHorizontal: width(3),
     paddingVertical: height(2),
   },
@@ -113,7 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: totalSize(1),
-    backgroundColor: colors.cardBackground,
+    backgroundColor: colors.light.cardBackground,
     marginBottom: height(1),
   },
   imageContainer: {
@@ -135,7 +156,6 @@ const styles = StyleSheet.create({
   contributorRole: {
     fontSize: totalSize(1.3),
     textAlign: "center",
-    color: colors.grey,
   },
   contributorSocial: {
     flexDirection: "row",

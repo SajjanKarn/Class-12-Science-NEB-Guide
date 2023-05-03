@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +15,8 @@ import {
   BannerAdSize,
   TestIds,
 } from "react-native-google-mobile-ads";
+import colors from "../config/colors";
+import ThemeContext from "../context/ThemeContext";
 
 const adUnitId = __DEV__
   ? TestIds.BANNER
@@ -40,6 +42,7 @@ const QUERY_COLLECTION = gql`
 
 export default function SubjectScreen() {
   const navigation = useNavigation();
+  const { isDarkMode } = useContext(ThemeContext);
   const { data, loading } = useQuery(QUERY_COLLECTION);
   const [adNotFailed, setAdNotFailed] = useState(true);
   return (
@@ -59,7 +62,14 @@ export default function SubjectScreen() {
             />
           )}
           <ScrollView
-            style={styles.container}
+            style={[
+              styles.container,
+              {
+                backgroundColor: isDarkMode
+                  ? colors.dark.background
+                  : colors.light.white,
+              },
+            ]}
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.contentContainer}>
@@ -107,7 +117,7 @@ export default function SubjectScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.light.white,
   },
   contentContainer: {
     flex: 1,
