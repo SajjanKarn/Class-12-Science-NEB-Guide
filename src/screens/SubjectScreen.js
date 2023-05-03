@@ -106,7 +106,7 @@ export default function SubjectScreen() {
               </View>
             </View>
 
-            <StatusBar style="auto" />
+            <StatusBar style={isDarkMode ? "light" : "dark"} />
           </ScrollView>
         </>
       )}
