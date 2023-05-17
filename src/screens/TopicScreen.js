@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
 import { useRoute } from "@react-navigation/native";
 import Lottie from "lottie-react-native";
@@ -21,6 +21,8 @@ import {
 import colors from "../config/colors";
 import ThemeContext from "../context/ThemeContext";
 
+import Pdf from "react-native-pdf";
+
 const adUnitId = __DEV__
   ? TestIds.REWARDED_INTERSTITIAL
   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
@@ -37,6 +39,8 @@ export default function TopicScreen() {
   const { isDarkMode } = useContext(ThemeContext);
   const params = useRoute().params;
   const [loaded, setLoaded] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
@@ -68,6 +72,7 @@ export default function TopicScreen() {
     content(id: "${params.topicId}") {
       contentTitle
       contentSlug
+      contentPdf
       content {
         json
       }
@@ -82,6 +87,54 @@ export default function TopicScreen() {
     <>
       {loading ? (
         <Loader />
+      ) : data?.content?.contentPdf ? (
+        <View style={styles.pdfContainer}>
+          <Pdf
+            source={{
+              uri: data?.content?.contentPdf,
+              cache: true,
+            }}
+            onLoadComplete={(numberOfPages, filePath) => {
+              setTotalPages(numberOfPages);
+            }}
+            onPageChanged={(page, numberOfPages) => {
+              setCurrentPage(page);
+            }}
+            onError={(error) => {
+              console.log(error);
+            }}
+            style={styles.pdf}
+            trustAllCerts={false}
+            renderActivityIndicator={() => <Loader />}
+            enablePaging={true}
+            horizontal
+            maxScale={5.0}
+          />
+          <View
+            style={[
+              styles.pagination,
+              {
+                backgroundColor: isDarkMode
+                  ? colors.dark.background
+                  : colors.light.white,
+              },
+            ]}
+          >
+            <AppText
+              variant="Bold"
+              style={[
+                styles.currentPage,
+                {
+                  color: isDarkMode
+                    ? colors.dark.textColor
+                    : colors.light.textColor,
+                },
+              ]}
+            >
+              {currentPage} / {totalPages}
+            </AppText>
+          </View>
+        </View>
       ) : (
         <ScrollView
           style={[
@@ -105,6 +158,7 @@ export default function TopicScreen() {
               data?.content?.content?.json,
               contentfulToReactnative
             )}
+
             {!data?.content?.content?.json && (
               <>
                 <AppText variant="SemiBold" style={styles.noContent}>
@@ -148,5 +202,26 @@ const styles = StyleSheet.create({
     height: height(30),
     marginTop: height(2),
     alignSelf: "center",
+  },
+  pdfContainer: {
+    flex: 1,
+  },
+  pdf: {
+    flex: 1,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+  },
+  pagination: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: colors.light.white,
+    padding: 10,
+    borderRadius: 5,
+    margin: 10,
+  },
+  currentPage: {
+    fontSize: totalSize(1.8),
+    color: colors.light.black,
   },
 });

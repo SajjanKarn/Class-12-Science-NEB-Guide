@@ -105,7 +105,7 @@ export default contentfulToReactnative = {
     ),
     [BLOCKS.UL_LIST]: (_node, children) => {
       return (
-        <View>
+        <View style={styles.unorderedList}>
           {children.map((child, i) => {
             return child;
           })}
@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
   italic: {
     fontStyle: "italic",
   },
+
   subscriptContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
