@@ -19,10 +19,18 @@ export default contentfulToReactnative = {
       return <AppText style={styles.italic}>{text}</AppText>;
     },
     [MARKS.SUBSCRIPT]: (text) => {
-      return <AppText style={styles.subscript}>{text}</AppText>;
+      return (
+        <View style={styles.subscriptContainer}>
+          <AppText style={styles.subscript}>{text}</AppText>
+        </View>
+      );
     },
     [MARKS.SUPERSCRIPT]: (text) => {
-      return <AppText style={styles.superscript}>{text}</AppText>;
+      return (
+        <View style={styles.superscriptContainer}>
+          <AppText style={styles.superscript}>{text}</AppText>
+        </View>
+      );
     },
     [MARKS.CODE]: (text) => {
       return (
@@ -148,15 +156,25 @@ const styles = StyleSheet.create({
   underline: {
     textDecorationLine: "underline",
   },
+  italic: {
+    fontStyle: "italic",
+  },
+  subscriptContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
   subscript: {
-    fontSize: totalSize(1.2),
-    // move the baseline a bit lower to align with superscript
-    transform: [{ translateY: -5 }],
+    fontSize: totalSize(1.3),
+    lineHeight: totalSize(2),
+    transform: [{ translateY: height(1.1) }],
+  },
+  superscriptContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
   },
   superscript: {
-    fontSize: totalSize(1.2),
-    // move the baseline a bit lower to align with subscript
-    transform: [{ translateY: 5 }],
+    fontSize: totalSize(1.3),
+    lineHeight: totalSize(2),
   },
   paragraph: {
     fontSize: totalSize(1.8),
