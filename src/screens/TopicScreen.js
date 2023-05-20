@@ -1,7 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Lottie from "lottie-react-native";
 
 import AppText from "../components/AppText";
@@ -23,49 +29,50 @@ import ThemeContext from "../context/ThemeContext";
 
 import Pdf from "react-native-pdf";
 
-const adUnitId = __DEV__
-  ? TestIds.REWARDED_INTERSTITIAL
-  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+// const adUnitId = __DEV__
+//   ? TestIds.REWARDED_INTERSTITIAL
+//   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
 
-const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
-  adUnitId,
-  {
-    requestNonPersonalizedAdsOnly: true,
-    keywords: ["fashion", "clothing"],
-  }
-);
+// const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
+//   adUnitId,
+//   {
+//     requestNonPersonalizedAdsOnly: true,
+//     keywords: ["fashion", "clothing"],
+//   }
+// );
 
 export default function TopicScreen() {
+  const navigation = useNavigation();
   const { isDarkMode } = useContext(ThemeContext);
   const params = useRoute().params;
   const [loaded, setLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
-      RewardedAdEventType.LOADED,
-      () => {
-        setLoaded(true);
-        rewardedInterstitial.show();
-      }
-    );
-    const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      (reward) => {
-        console.log("User earned reward of ", reward);
-      }
-    );
+  // useEffect(() => {
+  //   const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
+  //     RewardedAdEventType.LOADED,
+  //     () => {
+  //       setLoaded(true);
+  //       rewardedInterstitial.show();
+  //     }
+  //   );
+  //   const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
+  //     RewardedAdEventType.EARNED_REWARD,
+  //     (reward) => {
+  //       console.log("User earned reward of ", reward);
+  //     }
+  //   );
 
-    // Start loading the rewarded interstitial ad straight away
-    rewardedInterstitial.load();
+  //   // Start loading the rewarded interstitial ad straight away
+  //   rewardedInterstitial.load();
 
-    // Unsubscribe from events on unmount
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
-    };
-  }, []);
+  //   // Unsubscribe from events on unmount
+  //   return () => {
+  //     unsubscribeLoaded();
+  //     unsubscribeEarned();
+  //   };
+  // }, []);
 
   const QUERY_COLLECTION = gql`
   {
@@ -76,6 +83,14 @@ export default function TopicScreen() {
       content {
         json
       }
+
+      importantQuestions {
+        pdfUrl
+        content {
+          json
+        }
+      }
+
     }
   }
 `;
@@ -110,6 +125,28 @@ export default function TopicScreen() {
             horizontal
             maxScale={5.0}
           />
+          {data?.content?.importantQuestions?.pdfUrl ||
+            (data?.content?.importantQuestions?.content && (
+              <View style={styles.importantQuestionsContainer}>
+                <TouchableOpacity
+                  style={styles.importantQuestionsButton}
+                  activeOpacity={0.7}
+                >
+                  <AppText
+                    variant="Medium"
+                    style={styles.importantQuestionsText}
+                    onPress={() =>
+                      navigation.navigate("ImportantQuestions", {
+                        importantQuestions: data?.content?.importantQuestions,
+                      })
+                    }
+                  >
+                    Important Questions
+                  </AppText>
+                </TouchableOpacity>
+              </View>
+            ))}
+
           <View
             style={[
               styles.pagination,
@@ -122,14 +159,12 @@ export default function TopicScreen() {
           >
             <AppText
               variant="Bold"
-              style={[
-                styles.currentPage,
-                {
-                  color: isDarkMode
-                    ? colors.dark.textColor
-                    : colors.light.textColor,
-                },
-              ]}
+              style={{
+                fontSize: totalSize(1.8),
+                color: isDarkMode
+                  ? colors.dark.textColor
+                  : colors.light.textColor,
+              }}
             >
               {currentPage} / {totalPages}
             </AppText>
@@ -152,6 +187,22 @@ export default function TopicScreen() {
           </AppText>
 
           <Underline width={0.7 * 12 * params?.title?.length} />
+
+          {data?.content?.importantQuestions?.pdfUrl ||
+            (data?.content?.importantQuestions?.content && (
+              <TouchableOpacity
+                style={styles.importantQuestions}
+                onPress={() =>
+                  navigation.navigate("ImportantQuestions", {
+                    importantQuestions: data?.content?.importantQuestions,
+                  })
+                }
+              >
+                <AppText variant="Medium" style={styles.importantQuestionsText}>
+                  Important Questions
+                </AppText>
+              </TouchableOpacity>
+            ))}
 
           <View style={{ marginTop: height(2) }}>
             {documentToReactComponents(
@@ -192,6 +243,19 @@ const styles = StyleSheet.create({
     marginTop: height(0.5),
     marginBottom: height(0.2),
   },
+  importantQuestions: {
+    backgroundColor: colors.dark.underLine,
+    paddingVertical: height(1),
+    paddingHorizontal: width(2.5),
+    borderRadius: 5,
+    alignSelf: "flex-start",
+    marginTop: height(1),
+    marginBottom: height(2),
+  },
+  importantQuestionsText: {
+    fontSize: totalSize(1.5),
+    color: colors.light.white,
+  },
   noContent: {
     fontSize: totalSize(2.3),
     marginTop: height(0.5),
@@ -220,8 +284,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 10,
   },
-  currentPage: {
-    fontSize: totalSize(1.8),
-    color: colors.light.black,
+  importantQuestionsContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    padding: 10,
+    overflow: "hidden",
+    margin: 5,
+  },
+  importantQuestionsButton: {
+    backgroundColor: colors.dark.underLine,
+    paddingVertical: height(1.5),
+    paddingHorizontal: width(2.5),
+    borderRadius: 5,
+    alignSelf: "flex-start",
+  },
+  importantQuestionsText: {
+    fontSize: totalSize(1.5),
+    color: colors.light.white,
   },
 });

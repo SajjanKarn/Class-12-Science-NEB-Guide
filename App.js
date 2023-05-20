@@ -30,6 +30,7 @@ import { API_URL, CDA_ACCESS_TOKEN } from "./src/config/api";
 import "expo-dev-client";
 import colors from "./src/config/colors";
 import ThemeContext, { ThemeContextProvider } from "./src/context/ThemeContext";
+import ImporantQuestions from "./src/screens/ImporantQuestions";
 
 const cache = new InMemoryCache();
 
@@ -180,6 +181,14 @@ const AppStack = () => {
           headerTitle: "Physics",
         }}
       />
+      <Stack.Screen
+        name="ImportantQuestions"
+        component={ImporantQuestions}
+        options={{
+          headerTitle: "Important Questions",
+        }}
+      />
+
       <Stack.Screen
         name="AboutUs"
         component={AboutUs}

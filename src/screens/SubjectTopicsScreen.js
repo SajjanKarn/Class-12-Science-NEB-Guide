@@ -17,16 +17,16 @@ import {
 import colors from "../config/colors";
 import ThemeContext from "../context/ThemeContext";
 
-const adUnitId = __DEV__
-  ? TestIds.BANNER
-  : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+// const adUnitId = __DEV__
+//   ? TestIds.BANNER
+//   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
 
 export default function SubjectTopicsScreen() {
   const params = useRoute().params;
   const navigation = useNavigation();
   const { isDarkMode } = useContext(ThemeContext);
   const [refreshing, setRefreshing] = useState(false);
-  const [adNotFailed, setAdNotFailed] = useState(true);
+  // const [adNotFailed, setAdNotFailed] = useState(true);
 
   const QUERY_COLLECTION = gql`
   {
@@ -68,7 +68,7 @@ export default function SubjectTopicsScreen() {
         <Loader />
       ) : (
         <>
-          {adNotFailed && (
+          {/* {adNotFailed && (
             <BannerAd
               unitId={adUnitId}
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
@@ -77,7 +77,7 @@ export default function SubjectTopicsScreen() {
               }}
               onAdFailedToLoad={() => setAdNotFailed(false)}
             />
-          )}
+          )} */}
 
           <ScrollView
             style={[
