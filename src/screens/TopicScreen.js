@@ -48,6 +48,7 @@ export default function TopicScreen() {
   const [loaded, setLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [percentLoaded, setPercentLoaded] = useState(0);
 
   // set header title
   useEffect(() => {
@@ -118,12 +119,16 @@ export default function TopicScreen() {
             }}
             onLoadComplete={(numberOfPages, filePath) => {
               setTotalPages(numberOfPages);
+              setPercentLoaded(100);
             }}
             onPageChanged={(page, numberOfPages) => {
               setCurrentPage(page);
             }}
             onError={(error) => {
               console.log(error);
+            }}
+            onLoadProgress={(percent) => {
+              setPercentLoaded(Math.floor(percent * 100));
             }}
             style={styles.pdf}
             trustAllCerts={false}
@@ -132,6 +137,22 @@ export default function TopicScreen() {
             horizontal
             maxScale={5.0}
           />
+          {percentLoaded !== 100 && (
+            <AppText
+              variant="Bold"
+              style={{
+                fontSize: totalSize(2.3),
+                marginTop: height(0.5),
+                marginBottom: height(0.2),
+                alignSelf: "center",
+                color: isDarkMode
+                  ? colors.dark.underLine
+                  : colors.light.textColor,
+              }}
+            >
+              Loading {percentLoaded}%
+            </AppText>
+          )}
           {data?.content?.importantQuestions?.pdfUrl ||
             (data?.content?.importantQuestions?.content && (
               <View style={styles.importantQuestionsContainer}>

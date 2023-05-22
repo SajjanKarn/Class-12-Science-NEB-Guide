@@ -1,5 +1,6 @@
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import colors from "../config/colors";
+import AppText from "./AppText";
 
 const Loader = () => {
   return (
