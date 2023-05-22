@@ -49,6 +49,13 @@ export default function TopicScreen() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  // set header title
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: params.title,
+    });
+  }, []);
+
   // useEffect(() => {
   //   const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
   //     RewardedAdEventType.LOADED,

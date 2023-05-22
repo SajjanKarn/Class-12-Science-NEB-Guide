@@ -178,7 +178,7 @@ const AppStack = () => {
         name="TopicScreen"
         component={TopicScreen}
         options={{
-          headerTitle: "Physics",
+          headerTitle: "Topic",
         }}
       />
       <Stack.Screen

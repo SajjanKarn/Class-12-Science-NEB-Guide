@@ -22,7 +22,10 @@ const QUERY_COLLECTION = gql`
 export default function AboutUs() {
   const { isDarkMode } = useContext(ThemeContext);
 
-  const { data, loading } = useQuery(QUERY_COLLECTION);
+  const { data, loading } = useQuery(QUERY_COLLECTION, {
+    fetchPolicy: "cache-and-network",
+  });
+
   return (
     <>
       {loading ? (
@@ -83,16 +86,24 @@ export default function AboutUs() {
                   <View style={styles.socialIcon}>
                     <FontAwesome5
                       name="facebook"
-                      size={25}
-                      color={colors.facebook}
+                      size={20}
+                      color={
+                        isDarkMode
+                          ? colors.dark.underLine
+                          : colors.light.facebook
+                      }
                       onPress={() => Linking.openURL(contributor.facebook)}
                     />
                   </View>
                   <View style={styles.socialIcon}>
                     <FontAwesome5
                       name="instagram"
-                      size={25}
-                      color={colors.instagram}
+                      size={20}
+                      color={
+                        isDarkMode
+                          ? colors.dark.underLine
+                          : colors.light.instagram
+                      }
                       onPress={() => Linking.openURL(contributor.instagram)}
                     />
                   </View>
