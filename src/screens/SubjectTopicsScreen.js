@@ -35,9 +35,7 @@ export default function SubjectTopicsScreen() {
         items {
           chapterTitle
           chapterNumber
-          chapterThumbnail {
-            url
-          }
+          thumbnailUrl
           chapterContent {
             sys {
               id
@@ -106,7 +104,11 @@ export default function SubjectTopicsScreen() {
                       <SubjectCard
                         key={topic.sys.id}
                         title={topic.chapterTitle}
-                        // imageURL={topic.chapterThumbnail.url}
+                        imageURL={
+                          topic.thumbnailUrl
+                            ? topic.thumbnailUrl
+                            : "https://images.pexels.com/photos/583475/pexels-photo-583475.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                        }
                         subHeading={`Chapter ${topic.chapterNumber}`} // will fix this later
                         onPress={() =>
                           navigation.navigate("TopicScreen", {

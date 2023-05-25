@@ -1,4 +1,10 @@
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import colors from "../config/colors";
 import AppText from "./AppText";
 import { useContext } from "react";
@@ -27,7 +33,11 @@ export default function SubjectCard({
     >
       {imageURL && (
         <View style={styles.imageContainer}>
-          <Image source={{ uri: imageURL }} style={styles.image} />
+          <Image
+            source={{ uri: imageURL }}
+            style={styles.image}
+            onLoadStart={() => <ActivityIndicator size="large" />}
+          />
         </View>
       )}
       <View style={styles.cardContent}>

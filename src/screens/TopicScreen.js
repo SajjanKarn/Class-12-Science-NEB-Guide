@@ -28,6 +28,7 @@ import colors from "../config/colors";
 import ThemeContext from "../context/ThemeContext";
 
 import Pdf from "react-native-pdf";
+import { AntDesign } from "@expo/vector-icons";
 
 // const adUnitId = __DEV__
 //   ? TestIds.REWARDED_INTERSTITIAL
@@ -49,6 +50,7 @@ export default function TopicScreen() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [percentLoaded, setPercentLoaded] = useState(0);
+  const [scrollMode, setScrollMode] = useState(false);
 
   // set header title
   useEffect(() => {
@@ -133,8 +135,8 @@ export default function TopicScreen() {
             style={styles.pdf}
             trustAllCerts={false}
             renderActivityIndicator={() => <Loader />}
-            enablePaging={true}
-            horizontal
+            enablePaging={scrollMode ? false : true}
+            horizontal={scrollMode ? false : true}
             maxScale={5.0}
           />
           {percentLoaded !== 100 && (
@@ -174,6 +176,29 @@ export default function TopicScreen() {
                 </TouchableOpacity>
               </View>
             ))}
+
+          <View style={styles.scrollButtonContainer}>
+            <TouchableOpacity
+              style={[
+                styles.scrollButton,
+                {
+                  backgroundColor: isDarkMode
+                    ? colors.dark.background
+                    : colors.light.white,
+                },
+              ]}
+              activeOpacity={0.7}
+              onPress={() => setScrollMode(!scrollMode)}
+            >
+              <AntDesign
+                name={scrollMode ? "swap" : "bars"}
+                size={totalSize(2.5)}
+                color={
+                  isDarkMode ? colors.dark.textColor : colors.light.textColor
+                }
+              />
+            </TouchableOpacity>
+          </View>
 
           <View
             style={[
@@ -303,6 +328,20 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },
+  scrollButtonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    backgroundColor: colors.light.white,
+    borderRadius: 5,
+    margin: 10,
+  },
+  scrollButton: {
+    paddingVertical: height(1.5),
+    paddingHorizontal: width(2.5),
+    borderRadius: 5,
+    alignSelf: "flex-start",
+  },
   pagination: {
     position: "absolute",
     bottom: 0,
@@ -316,14 +355,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    padding: 10,
+    padding: 5,
     overflow: "hidden",
-    margin: 5,
   },
   importantQuestionsButton: {
     backgroundColor: colors.dark.underLine,
-    paddingVertical: height(1.5),
-    paddingHorizontal: width(2.5),
+    paddingVertical: height(1),
+    paddingHorizontal: width(2),
     borderRadius: 5,
     alignSelf: "flex-start",
   },
