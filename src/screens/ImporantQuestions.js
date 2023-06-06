@@ -1,5 +1,11 @@
 import { useContext, useState } from "react";
-import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { width, height, totalSize } from "react-native-dimension";
 import { useRoute } from "@react-navigation/native";
 import Pdf from "react-native-pdf";
@@ -11,33 +17,17 @@ import Loader from "../components/Loader";
 
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import contentfulToReactnative from "../utils/richtext";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function ImporantQuestions() {
   const { isDarkMode } = useContext(ThemeContext);
   const { importantQuestions } = useRoute().params;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [percentLoaded, setPercentLoaded] = useState(0);
+  const [scrollMode, setScrollMode] = useState(false);
 
-  return importantQuestions?.content?.json ? (
-    <ScrollView
-      style={[
-        styles.container,
-        {
-          backgroundColor: isDarkMode
-            ? colors.dark.background
-            : colors.light.white,
-        },
-      ]}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={{ marginTop: height(2) }}>
-        {documentToReactComponents(
-          importantQuestions?.content?.json,
-          contentfulToReactnative
-        )}
-      </View>
-    </ScrollView>
-  ) : (
+  return importantQuestions?.pdfUrl ? (
     <View
       style={[
         styles.pdfContainer,
@@ -55,6 +45,7 @@ export default function ImporantQuestions() {
         }}
         onLoadComplete={(numberOfPages, filePath) => {
           setTotalPages(numberOfPages);
+          setPercentLoaded(100);
         }}
         onPageChanged={(page, numberOfPages) => {
           setCurrentPage(page);
@@ -65,10 +56,49 @@ export default function ImporantQuestions() {
         style={styles.pdf}
         trustAllCerts={false}
         renderActivityIndicator={() => <Loader />}
-        enablePaging={true}
-        horizontal
+        enablePaging={scrollMode ? false : true}
+        horizontal={scrollMode ? false : true}
         maxScale={5.0}
+        onLoadProgress={(percent) => {
+          setPercentLoaded(Math.floor(percent * 100));
+        }}
       />
+
+      {percentLoaded !== 100 && (
+        <AppText
+          variant="Bold"
+          style={{
+            fontSize: totalSize(2.3),
+            marginTop: height(0.5),
+            marginBottom: height(0.2),
+            alignSelf: "center",
+            color: isDarkMode ? colors.dark.textColor : colors.light.underLine,
+          }}
+        >
+          Loading {percentLoaded}%
+        </AppText>
+      )}
+
+      <View style={styles.scrollButtonContainer}>
+        <TouchableOpacity
+          style={[
+            styles.scrollButton,
+            {
+              backgroundColor: isDarkMode
+                ? colors.dark.background
+                : colors.light.white,
+            },
+          ]}
+          activeOpacity={0.7}
+          onPress={() => setScrollMode(!scrollMode)}
+        >
+          <AntDesign
+            name={scrollMode ? "swap" : "bars"}
+            size={totalSize(2.5)}
+            color={isDarkMode ? colors.dark.textColor : colors.light.textColor}
+          />
+        </TouchableOpacity>
+      </View>
 
       <View
         style={[
@@ -91,6 +121,25 @@ export default function ImporantQuestions() {
         </AppText>
       </View>
     </View>
+  ) : (
+    <ScrollView
+      style={[
+        styles.container,
+        {
+          backgroundColor: isDarkMode
+            ? colors.dark.background
+            : colors.light.white,
+        },
+      ]}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={{ marginTop: height(2) }}>
+        {documentToReactComponents(
+          importantQuestions?.content?.json,
+          contentfulToReactnative
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -107,6 +156,20 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+  },
+  scrollButtonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    backgroundColor: colors.light.white,
+    borderRadius: 5,
+    margin: 10,
+  },
+  scrollButton: {
+    paddingVertical: height(1.5),
+    paddingHorizontal: width(2.5),
+    borderRadius: 5,
+    alignSelf: "flex-start",
   },
   pagination: {
     position: "absolute",

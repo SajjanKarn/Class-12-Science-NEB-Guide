@@ -155,27 +155,28 @@ export default function TopicScreen() {
               Loading {percentLoaded}%
             </AppText>
           )}
+
           {data?.content?.importantQuestions?.pdfUrl ||
-            (data?.content?.importantQuestions?.content && (
-              <View style={styles.importantQuestionsContainer}>
-                <TouchableOpacity
-                  style={styles.importantQuestionsButton}
-                  activeOpacity={0.7}
+          data?.content?.importantQuestions?.content ? (
+            <View style={styles.importantQuestionsContainer}>
+              <TouchableOpacity
+                style={styles.importantQuestionsButton}
+                activeOpacity={0.7}
+              >
+                <AppText
+                  variant="Medium"
+                  style={styles.importantQuestionsText}
+                  onPress={() =>
+                    navigation.navigate("ImportantQuestions", {
+                      importantQuestions: data?.content?.importantQuestions,
+                    })
+                  }
                 >
-                  <AppText
-                    variant="Medium"
-                    style={styles.importantQuestionsText}
-                    onPress={() =>
-                      navigation.navigate("ImportantQuestions", {
-                        importantQuestions: data?.content?.importantQuestions,
-                      })
-                    }
-                  >
-                    Important Questions
-                  </AppText>
-                </TouchableOpacity>
-              </View>
-            ))}
+                  Important Questions
+                </AppText>
+              </TouchableOpacity>
+            </View>
+          ) : null}
 
           <View style={styles.scrollButtonContainer}>
             <TouchableOpacity
@@ -242,20 +243,20 @@ export default function TopicScreen() {
           <Underline width={0.7 * 12 * params?.title?.length} />
 
           {data?.content?.importantQuestions?.pdfUrl ||
-            (data?.content?.importantQuestions?.content && (
-              <TouchableOpacity
-                style={styles.importantQuestions}
-                onPress={() =>
-                  navigation.navigate("ImportantQuestions", {
-                    importantQuestions: data?.content?.importantQuestions,
-                  })
-                }
-              >
-                <AppText variant="Medium" style={styles.importantQuestionsText}>
-                  Important Questions
-                </AppText>
-              </TouchableOpacity>
-            ))}
+          data?.content?.importantQuestions?.content ? (
+            <TouchableOpacity
+              style={styles.importantQuestions}
+              onPress={() =>
+                navigation.navigate("ImportantQuestions", {
+                  importantQuestions: data?.content?.importantQuestions,
+                })
+              }
+            >
+              <AppText variant="Medium" style={styles.importantQuestionsText}>
+                Important Questions
+              </AppText>
+            </TouchableOpacity>
+          ) : null}
 
           <View style={{ marginTop: height(2) }}>
             {documentToReactComponents(
