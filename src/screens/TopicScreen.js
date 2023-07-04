@@ -30,17 +30,17 @@ import ThemeContext from "../context/ThemeContext";
 import Pdf from "react-native-pdf";
 import { AntDesign } from "@expo/vector-icons";
 
-// const adUnitId = __DEV__
-//   ? TestIds.REWARDED_INTERSTITIAL
-//   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+const adUnitId = __DEV__
+  ? TestIds.REWARDED_INTERSTITIAL
+  : "ca-app-pub-7778363953547866/6441631448";
 
-// const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
-//   adUnitId,
-//   {
-//     requestNonPersonalizedAdsOnly: true,
-//     keywords: ["fashion", "clothing"],
-//   }
-// );
+const rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(
+  adUnitId,
+  {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ["fashion", "clothing"],
+  }
+);
 
 export default function TopicScreen() {
   const navigation = useNavigation();
@@ -59,30 +59,30 @@ export default function TopicScreen() {
     });
   }, []);
 
-  // useEffect(() => {
-  //   const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
-  //     RewardedAdEventType.LOADED,
-  //     () => {
-  //       setLoaded(true);
-  //       rewardedInterstitial.show();
-  //     }
-  //   );
-  //   const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
-  //     RewardedAdEventType.EARNED_REWARD,
-  //     (reward) => {
-  //       console.log("User earned reward of ", reward);
-  //     }
-  //   );
+  useEffect(() => {
+    const unsubscribeLoaded = rewardedInterstitial.addAdEventListener(
+      RewardedAdEventType.LOADED,
+      () => {
+        setLoaded(true);
+        rewardedInterstitial.show();
+      }
+    );
+    const unsubscribeEarned = rewardedInterstitial.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward) => {
+        console.log("User earned reward of ", reward);
+      }
+    );
 
-  //   // Start loading the rewarded interstitial ad straight away
-  //   rewardedInterstitial.load();
+    // Start loading the rewarded interstitial ad straight away
+    rewardedInterstitial.load();
 
-  //   // Unsubscribe from events on unmount
-  //   return () => {
-  //     unsubscribeLoaded();
-  //     unsubscribeEarned();
-  //   };
-  // }, []);
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
 
   const QUERY_COLLECTION = gql`
   {

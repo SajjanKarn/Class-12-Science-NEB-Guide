@@ -18,9 +18,9 @@ import {
 import colors from "../config/colors";
 import ThemeContext from "../context/ThemeContext";
 
-// const adUnitId = __DEV__
-//   ? TestIds.BANNER
-//   : "ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy";
+const adUnitId = __DEV__
+  ? TestIds.BANNER
+  : "ca-app-pub-7778363953547866/2342287104";
 
 const QUERY_COLLECTION = gql`
   {
@@ -44,14 +44,14 @@ export default function SubjectScreen() {
   const navigation = useNavigation();
   const { isDarkMode } = useContext(ThemeContext);
   const { data, loading } = useQuery(QUERY_COLLECTION);
-  // const [adNotFailed, setAdNotFailed] = useState(true);
+  const [adNotFailed, setAdNotFailed] = useState(true);
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <>
-          {/* {adNotFailed && (
+          {adNotFailed && (
             <BannerAd
               unitId={adUnitId}
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
@@ -60,7 +60,7 @@ export default function SubjectScreen() {
               }}
               onAdFailedToLoad={() => setAdNotFailed(false)}
             />
-          )} */}
+          )}
           <ScrollView
             style={[
               styles.container,
